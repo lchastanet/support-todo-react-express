@@ -1,35 +1,42 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react"
+import styled from "@emotion/styled"
+import axios from "axios"
+
+import TaskCard from "./components/TaskCard"
+import NewtaskForm from "./components/NewtaskForm"
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [tasks, setTasks] = useState([])
+
+  const lastIndex = tasks.length - 1
+
+  useEffect(() => {
+    axios
+      .get(`${import.meta.env.VITE_BACKEND_URL}/task`)
+      .then((res) => setTasks(res.data))
+  }, [])
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <NewtaskForm setTasks={setTasks} />
+      <TasksContainer>
+        {tasks.map((task, i) => (
+          <TaskCard
+            key={task.id}
+            task={task}
+            isLast={lastIndex === i}
+            setTasks={setTasks}
+          />
+        ))}
+      </TasksContainer>
     </>
   )
 }
+
+const TasksContainer = styled.div`
+  width: 35%;
+  border: solid gray 1px;
+  border-radius: 15px;
+`
 
 export default App

@@ -12,7 +12,7 @@ class TaskManager extends AbstractManager {
     )
   }
 
-  insert({ content, status, id }) {
+  edit({ content, status, id }) {
     return this.database.query(
       `update ${this.table} set content = ?, status = ? where  id = ?`,
       [content, status, id]
